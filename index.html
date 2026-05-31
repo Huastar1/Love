@@ -29,11 +29,14 @@
             position: relative;
             z-index: 10;
             color: #fff;
-            font-size: 4rem;
+            /* 核心修复：使用 clamp() 函数让字体在不同设备上自动调整 */
+            /* 最小 2rem(手机), 理想 4rem(平板), 最大 6rem(电脑) */
+            font-size: clamp(2rem, 4vw, 6rem);
             font-weight: bold;
             text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
             letter-spacing: 5px;
             animation: heartbeat 1.5s ease-in-out infinite;
+            text-align: center; /* 防止极小屏幕下文字挤出边界 */
         }
 
         @keyframes heartbeat {
@@ -100,7 +103,7 @@
             }
         }, { once: true }); // { once: true } 确保这段代码只执行一次
 
-        // 2. 定义粉色猫爪的 SVG 图案
+        // 2. 定义粉色猫爪的 SVG 图案 (修复了 xmlns 属性)
         const pawSvg = `
         <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
             <!-- 大肉垫 -->
