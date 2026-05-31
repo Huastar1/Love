@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>阿阮真棒呀！！！</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             overflow: hidden;
@@ -44,7 +50,7 @@
             position: absolute;
             width: 80px;
             height: 80px;
-            pointer-events: none; /* 让鼠标穿透，不影响再次点击 */
+            pointer-events: none;
             transform: translate(-50%, -50%) scale(0);
             animation: popInAndFade 1s forwards;
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
@@ -60,7 +66,6 @@
         .bg-heart {
             position: absolute;
             bottom: -50px;
-            color: rgba(255, 255, 255, 0.6);
             font-size: 20px;
             animation: floatUp linear forwards;
             z-index: 1;
@@ -79,19 +84,35 @@
     <div class="main-text">阿阮真棒呀！！！</div>
 
     <script>
-        // 1. 定义粉色猫爪的 SVG 图案
+        // 1. 音乐播放逻辑：监听首次点击，绕过浏览器自动播放拦截
+        const audio = new Audio('music.mp3'); // 确保同目录下有 music.mp3
+        audio.loop = true; // 设置音乐循环播放
+        let isMusicPlaying = false;
+
+        document.addEventListener('click', function() {
+            if (!isMusicPlaying) {
+                audio.play().then(() => {
+                    console.log('背景音乐已启动');
+                    isMusicPlaying = true;
+                }).catch(err => {
+                    console.warn('播放失败:', err);
+                });
+            }
+        }, { once: true }); // { once: true } 确保这段代码只执行一次
+
+        // 2. 定义粉色猫爪的 SVG 图案
         const pawSvg = `
         <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-            <!-- 大肉垫 (粉色填充) -->
+            <!-- 大肉垫 -->
             <path d="M256 224c-79.5 0-144 64.5-144 144s64.5 144 144 144 144-64.5 144-144-64.5-144-144-144z" fill="#ff9a9e"/>
-            <!-- 上方四个小脚趾 (粉色填充) -->
+            <!-- 四个小脚趾 -->
             <circle cx="120" cy="150" r="45" fill="#ff9a9e"/>
             <circle cx="200" cy="90" r="45" fill="#ff9a9e"/>
             <circle cx="312" cy="90" r="45" fill="#ff9a9e"/>
             <circle cx="392" cy="150" r="45" fill="#ff9a9e"/>
         </svg>`;
 
-        // 2. 点击生成猫爪的逻辑
+        // 3. 点击生成猫爪的逻辑
         document.addEventListener('click', function(e) {
             const paw = document.createElement('div');
             paw.className = 'paw-print';
@@ -101,31 +122,31 @@
             paw.style.left = e.clientX + 'px';
             paw.style.top = e.clientY + 'px';
 
-            // 随机大小和旋转，增加自然感
-            const randomScale = 0.8 + Math.random() * 0.6; // 0.8 ~ 1.4倍
-            const randomRotate = (Math.random() - 0.5) * 60; // -30 ~ 30度
+            // 随机大小和旋转
+            const randomScale = 0.8 + Math.random() * 0.6;
+            const randomRotate = (Math.random() - 0.5) * 60;
             paw.style.transform = `translate(-50%, -50%) scale(${randomScale}) rotate(${randomRotate}deg)`;
 
             document.body.appendChild(paw);
 
-            // 动画结束后移除元素，防止页面卡顿
+            // 动画结束后移除元素
             setTimeout(() => {
                 paw.remove();
             }, 1000);
         });
 
-        // 3. 自动生成背景爱心的逻辑
+        // 4. 自动生成背景爱心的逻辑
         function createHeart() {
             const heart = document.createElement('div');
             heart.className = 'bg-heart';
-            heart.innerHTML = '❤'; // 这里用简单的字符爱心，或者换成SVG也可以
+            heart.innerHTML = '❤';
 
             // 随机位置和属性
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.fontSize = (15 + Math.random() * 30) + 'px';
-            heart.style.animationDuration = (3 + Math.random() * 4) + 's'; // 3~7秒飘完
+            heart.style.animationDuration = (3 + Math.random() * 4) + 's';
             
-            // 随机颜色 (白色或淡粉色)
+            // 随机颜色
             const colors = ['rgba(255,255,255,0.5)', 'rgba(255,192,203,0.6)', 'rgba(255,105,180,0.4)'];
             heart.style.color = colors[Math.floor(Math.random() * colors.length)];
 
@@ -139,8 +160,6 @@
 
         // 每300毫秒生成一个爱心
         setInterval(createHeart, 300);
-
     </script>
 </body>
 </html>
- 
